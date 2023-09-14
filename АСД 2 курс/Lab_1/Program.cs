@@ -4,20 +4,30 @@ Queue queue= new Queue();
 for (int i = 0; i < N; i++)
 {
     char value = Convert.ToChar(Console.ReadLine());
-    queue.add(value);
+    queue.enqueue(value);
 }
-queue.toString();
+queue.print();
+
+char firstElem = queue.peek();
+Console.WriteLine($"\nThe first element of the queue is {firstElem}.");
+
 
 Console.Write("Write down the number of elements y0u want to pick--> ");
 int number = int.Parse(Console.ReadLine());
-//for (int k = 0; k < number; k++)
-//{
-    queue.pick();
-queue.toString();
-queue.peek();
+for (int k = 0; k < number; k++)
+{
+    char pickedElem = queue.dequeue();
+    Console.WriteLine($"Your picked element is {pickedElem}.");
+}
 
-queue.kilkst();
-char minimum=queue.min();
+queue.print();
+firstElem = queue.peek();
+Console.WriteLine($"The first element of the queue is {firstElem}.");
+
+int numberOfElements = queue.count();
+Console.WriteLine($"The number of elements is {numberOfElements}");
+
+char minimum = queue.min();
 Console.WriteLine($"Minimun of the queue is {minimum}");
 
 
@@ -25,83 +35,94 @@ Console.WriteLine($"Minimun of the queue is {minimum}");
 
 public class Element
 {
-    public char currentEl;
+    public char value;
     public Element Next;
 }
 
 public class Queue
 {
-    //public Element Elem;
+    Element head;
     Element tail;
-    Element prevEl;
-    Element currentEl;
-    public void add(char value)
+    
+    public void enqueue(char value)
     {
-        Element currentEl = new Element();
-        currentEl.Next=currentEl;
-        
-        tail = currentEl;
-        
+        Element element = new Element();
+        element.value = value;
+        element.Next = tail;
 
-    }
-    public void pick()
-    {
-        while(currentEl.Next!=null)
-        { 
-            currentEl = currentEl.Next;
+        if(head==null)
+        {
+            head= element; 
         }
-        Element pickedElement = currentEl;
-        currentEl = null;
+        tail = element;
     }
-    public void peek()
+    public char dequeue()
     {
-        do
+        char pickedElementValue = head.value;
+        if(head==tail)
         {
-            currentEl = currentEl.Next;
-        } while (currentEl != null);
-        Console.WriteLine($"The value of the first element is {currentEl}.");
-
+            head = null;
+            tail = null;
+        }
+        else 
+        {
+            Element element = tail;
+            while (element.Next != head)
+            {
+                element = element.Next;
+            }
+            head = element;
+            head.Next = null;
+        }
+        return pickedElementValue;
     }
-    public void toString()
+    public char peek()
     {
-        if (currentEl != null)
+        return head.value;
+    }
+    public void print()
+    {
+        Console.WriteLine();
+        if (head != null)
         {
+            Element currentEl = tail;
             do
             {
-                Console.Write($"{currentEl}\t");
+                Console.Write($"{currentEl.value}\t");
                 currentEl = currentEl.Next;
-            } while (currentEl.Next != null);
+            } while (currentEl!= null);
+            Console.WriteLine();
         }
-        else ifEmpty();
-    }
-    public void kilkst()
-    {
-        int i = 0;
-        while (currentEl != null)
-        {
-            currentEl = currentEl.Next;
-            i++;
-        }
-        Console.WriteLine($"The number of elements is {i}");
-    }
-    public char min()
-    {
-        char min = char.MinValue;
-        while (currentEl != null)
-        {
-            if(min>Convert.ToChar(currentEl))
-                min = Convert.ToChar(currentEl);
-            currentEl = currentEl.Next;  
-        }
-        return min;
-    }
-    public void ifEmpty()
-    {
-        if (currentEl == null)
+        else
         {
             Console.WriteLine("There are no elements in the queue!");
         }
     }
+    public int count()
+    {
+        Element currentEl = tail;
+        int i = 0;
+        while (currentEl != null)
+        {
+            i++;
+            currentEl = currentEl.Next;
+            
+        }
+        return i;
+    }
+    public char min()
+    {
+        Element currentEl=tail;
+        char min = char.MaxValue;
+        while (currentEl != null)
+        {
+            if (min > currentEl.value)
+                min = currentEl.value;
+            currentEl = currentEl.Next;
+        }
+        return min;
+    }
+
 
 }
 
